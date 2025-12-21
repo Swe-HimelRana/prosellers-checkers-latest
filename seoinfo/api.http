@@ -1,0 +1,42 @@
+### SEO Info API - HTTP Requests
+### Use this file with REST Client extension in VS Code or similar tools
+
+@baseUrl = http://localhost:8888
+@apiKey = my_secret_api_key_123
+
+### 1. Get Domain Info
+GET {{baseUrl}}/api.php?domain=example.com&key={{apiKey}}
+
+###
+
+### 2. Add New Domain (with IP resolution)
+GET {{baseUrl}}/add.php?domain=google.com&key={{apiKey}}
+
+###
+
+### 3. Get Queue (10 recent domains with empty update_date)
+GET {{baseUrl}}/getqueue.php?key={{apiKey}}
+
+###
+
+### 4. Update SQL (Insert Example)
+POST {{baseUrl}}/update.php
+Content-Type: application/x-www-form-urlencoded
+
+key={{apiKey}}&sql=SU5TRVJUIElOVE8gc2VvX2RhdGEgKGRvbWFpbiwgZG9tYWluX2F1dGhvcml0eSkgVkFMVUVTICgndGVzdC5jb20nLCA0NSk=
+
+###
+
+### 5. Update SQL (Update Example - Update domain's update_date)
+POST {{baseUrl}}/update.php
+Content-Type: application/x-www-form-urlencoded
+
+key={{apiKey}}&sql=VVBEQVRFIHNlb19kYXRhIFNFVCB1cGRhdGVfZGF0ZSA9ICcxNy0xMi0yMDI1JyBXSEVSRSBkb21haW4gPSAnZXhhbXBsZS5jb20n
+
+###
+
+### Notes:
+### - SQL parameter must be base64 encoded
+### - Example SQL for insert: INSERT INTO seo_data (domain, domain_authority) VALUES ('test.com', 45)
+### - Example SQL for update: UPDATE seo_data SET update_date = '17-12-2025' WHERE domain = 'example.com'
+### - To encode SQL: echo -n "YOUR_SQL" | base64

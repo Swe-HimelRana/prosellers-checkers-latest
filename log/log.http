@@ -1,0 +1,31 @@
+### Submit Simple Log
+POST https://logs.sellers.swewiki.eu.org/api.php
+Content-Type: application/json
+
+{
+  "title": "Test Log",
+  "data": "This is a simple text log entry"
+}
+
+### Submit JSON Data Log
+POST https://logs.sellers.swewiki.eu.org/api.php
+Content-Type: application/json
+
+{
+  "title": "Server Status",
+  "data": {
+    "hostname": "server-01",
+    "cpu": "15%",
+    "memory": "2GB",
+    "active": true
+  }
+}
+
+### Test Duplicate (Should be ignored by API)
+POST http://localhost:88/api.php
+Content-Type: application/json
+
+{
+  "title": "Test Log",
+  "data": "This is a simple text log entry1"
+}

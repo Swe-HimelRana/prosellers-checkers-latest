@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app-checker:
+    image: ghcr.io/swe-himelrana/proseller-checker:latest
+    container_name: app-checker
+    ports:
+      - "8801:8801"
+      - "8802:8802"
+    environment:
+      - DB_FILE_PATH=/app/data/database.sqlite
+    volumes:
+      - ./docker_data:/app/data
+    restart: unless-stopped
+    networks:
+      - ngixn-proxy-main_default
+
+networks:
+  ngixn-proxy-main_default:
+    external: true

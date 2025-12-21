@@ -1,0 +1,12 @@
+services:
+  seoinfo:
+    build: .
+    container_name: seoinfo-api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/var/www/html
+      - ./config.php:/var/www/html/config.php
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    restart: unless-stopped
