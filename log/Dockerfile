@@ -7,6 +7,11 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Disable PHP OPcache and Apache EnableSendfile for macOS volume compatibility
+RUN echo "opcache.enable=0" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini || \
+    echo "opcache.enable=0" > /usr/local/etc/php/conf.d/no-opcache.ini
+RUN echo "EnableSendfile Off" >> /etc/apache2/apache2.conf
+
 # Copy application files
 COPY . /var/www/html
 

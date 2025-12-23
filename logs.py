@@ -3,7 +3,7 @@ import threading
 import os
 
 # Configuration
-LOG_SERVER_URL = os.getenv("LOG_SERVER_URL", "http://127.0.0.1:8801/api.php")
+LOG_SERVER_URL = os.getenv("LOG_SERVER_URL", "http://127.0.0.1:8803/api.php")
 
 def _send_log(title, data):
     """

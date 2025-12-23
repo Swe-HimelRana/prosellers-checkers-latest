@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Prosellers Checkers API is a Flask-based REST API that provides credential validation services for various protocols including cPanel, SMTP, SSH, RDP, and Proxy servers. All endpoints require API key authentication.
+The Prosellers Checkers API is a Flask-based REST API that provides credential validation services for various protocols including cPanel, SMTP, SSH, RDP, and Proxy servers. 
+
+It also includes a **built-in Proxy Management system** that allows you to use cPanel accounts as SSH tunnels or pass traffic through real proxies.
 
 ## Base URL
 
@@ -12,34 +14,49 @@ http://localhost:8888
 
 > **Note**: The port can be configured via the `PORT` environment variable (default: 8888)
 
-## Authentication
+## Architecture Change: Asynchronous Jobs (New!)
 
-All API endpoints (except exempt paths) require an API key to be passed in the request headers.
+To handle high volumes of requests and prevent worker timeouts, the Prosellers Checkers API now uses an **Asynchronous Job Queue** (Redis-backed).
 
-### Authentication Header
+### How to use the API now:
 
-```
-X-API-Key: your_api_key_here
-```
+1.  **Step 1: Submit a Task**: Call any of the `/check/...` endpoints as usual. Instead of waiting for the result, the API will return a `job_id` immediately with a `202 Accepted` status.
+2.  **Step 2: Poll for Results**: Use the new `/results/<job_id>` endpoint to check if the task is finished and get the final result.
 
-The API key is configured in `config.py` as `API_KEY`.
+---
 
-### Authentication Response
+## Centralized Job Results
 
-If authentication fails, you'll receive:
+Use this endpoint to retrieve the status and result of any previously queued check.
 
-**Status Code**: `401 Unauthorized`
+**Endpoint**: `GET /results/<job_id>`
 
+**Authentication**: Required
+
+#### Success Response (Task Processing)
+**Status Code**: `200 OK`
 ```json
 {
-  "ok": false,
-  "message": "Unauthorized"
+  "ok": true,
+  "message": "Task is still processing",
+  "status": "queued"
+}
+```
+
+#### Success Response (Task Finished)
+**Status Code**: `200 OK`
+```json
+{
+  "ok": true,
+  "message": "cPanel login is working",
+  "details": { ... },
+  "status": "finished"
 }
 ```
 
 ---
 
-## Endpoints
+## Endpoints (All 202 Accepted)
 
 ### 1. Health Check
 
@@ -87,6 +104,7 @@ Validates cPanel login credentials and performs PTR record verification.
 | password   | string  | Yes      | -       | cPanel password                       |
 | ssl        | boolean | No       | true    | Use SSL/TLS connection                |
 | port       | integer | No       | 2083/2082 | cPanel port (2083 for SSL, 2082 for non-SSL) |
+| use_proxy  | boolean | No       | false   | Use an active proxy from the manager  |
 
 #### Request Example
 
@@ -776,6 +794,42 @@ Both database files must be present in the application root directory.
 - ASN will be 0 if not found in the database
 - The endpoint handles both IPv4 and IPv6 addresses
 - No logging is performed for IP lookups
+
+---
+
+### 8. Proxy Status & GeoIP
+Check all active proxies tracked by the proxy-service and return their GeoIP information. This uses `reallyfreegeoip.org` through each proxy to verify real-world connectivity.
+
+**Endpoint**: `GET /proxies/status`
+
+**Authentication**: Required
+
+#### Request Example
+```bash
+curl -X GET http://localhost:8888/proxies/status \
+  -H "X-API-Key: your_api_key_here"
+```
+
+#### Success Response Example
+**Status Code**: `200 OK`
+```json
+{
+  "ok": true,
+  "count": 1,
+  "proxies": [
+    {
+      "id": 5,
+      "type": "cpanel",
+      "proxy_url": "socks5://proxy-service:9900",
+      "ip": "103.253.38.12",
+      "country_name": "Bangladesh",
+      "country_code": "BD",
+      "time_zone": "Asia/Dhaka",
+      "ok": true
+    }
+  ]
+}
+```
 
 ---
 

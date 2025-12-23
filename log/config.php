@@ -1,6 +1,6 @@
 <?php
 // Admin Password
-$admin_password = '@Pass123@Pass'; // Change this!
+$admin_password = getenv('LOG_ADMIN_PASSWORD') ?: '@Pass123@Pass'; // Change this!
 
 // --- OPTION 1: SQLite (Great for local testing) ---
 $db_file = getenv('DB_FILE_PATH') ?: __DIR__ . '/database.sqlite';
@@ -53,7 +53,7 @@ try {
 */
 // --- Encryption Configuration ---
 //$encryption_key = 'CHANGE_ME_TO_A_STRONG_RANDOM_KEY_AT_LEAST_32_CHARS'; // IMPORTANT: keep this safe!
-$encryption_key = 'r8F#2Z!qA9mT@xK7D$S5LwP^cN4YB&UeHfGJ0RkC6VQ1'; // IMPORTANT: keep this safe!
+$encryption_key = getenv('LOG_ENCRYPTION_KEY') ?: 'r8F#2Z!qA9mT@xK7D$S5LwP^cN4YB&UeHfGJ0RkC6VQ1'; // IMPORTANT: keep this safe!
 $cipher_method = "AES-256-CBC";
 
 function encrypt_data($data) {

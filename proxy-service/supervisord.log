@@ -1,0 +1,89 @@
+2025-12-23 08:05:42,788 INFO Set uid to user 0 succeeded
+2025-12-23 08:05:42,811 INFO supervisord started with pid 1
+2025-12-23 08:05:43,830 INFO spawned: 'apache2' with pid 7
+2025-12-23 08:05:43,913 INFO spawned: 'tunnel_manager' with pid 8
+2025-12-23 08:05:45,193 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 08:05:45,197 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 14:05:02,913 WARN received SIGTERM indicating exit request
+2025-12-23 14:05:02,928 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 14:05:03,010 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 14:05:03,011 INFO reaped unknown pid 11 (exit status 0)
+2025-12-23 14:05:03,023 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 14:25:28,948 INFO Set uid to user 0 succeeded
+2025-12-23 14:25:28,968 INFO supervisord started with pid 1
+2025-12-23 14:25:29,979 INFO spawned: 'apache2' with pid 7
+2025-12-23 14:25:29,986 INFO spawned: 'tunnel_manager' with pid 8
+2025-12-23 14:25:31,114 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 14:25:31,114 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:35:53,242 WARN received SIGTERM indicating exit request
+2025-12-23 16:35:53,245 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 16:35:53,279 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 16:35:53,280 INFO reaped unknown pid 31 (exit status 0)
+2025-12-23 16:35:53,281 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 16:36:41,937 INFO Set uid to user 0 succeeded
+2025-12-23 16:36:41,951 INFO supervisord started with pid 1
+2025-12-23 16:36:42,966 INFO spawned: 'apache2' with pid 7
+2025-12-23 16:36:43,006 INFO spawned: 'tunnel_manager' with pid 9
+2025-12-23 16:36:44,383 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:36:44,384 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:42:58,233 WARN received SIGTERM indicating exit request
+2025-12-23 16:42:58,235 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 16:42:58,258 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 16:42:58,258 INFO reaped unknown pid 11 (exit status 0)
+2025-12-23 16:42:58,258 INFO reaped unknown pid 13 (exit status 0)
+2025-12-23 16:42:58,259 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 16:43:41,483 INFO Set uid to user 0 succeeded
+2025-12-23 16:43:41,495 INFO supervisord started with pid 1
+2025-12-23 16:43:42,504 INFO spawned: 'apache2' with pid 7
+2025-12-23 16:43:42,519 INFO spawned: 'tunnel_manager' with pid 8
+2025-12-23 16:43:43,714 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:43:43,715 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:50:07,675 WARN received SIGTERM indicating exit request
+2025-12-23 16:50:07,676 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 16:50:07,707 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 16:50:07,707 INFO reaped unknown pid 11 (exit status 0)
+2025-12-23 16:50:07,708 INFO reaped unknown pid 12 (exit status 0)
+2025-12-23 16:50:07,709 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 16:51:03,768 INFO Set uid to user 0 succeeded
+2025-12-23 16:51:03,828 INFO supervisord started with pid 1
+2025-12-23 16:51:04,862 INFO spawned: 'apache2' with pid 7
+2025-12-23 16:51:04,872 INFO spawned: 'tunnel_manager' with pid 8
+2025-12-23 16:51:06,103 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:51:06,106 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:54:48,602 WARN received SIGTERM indicating exit request
+2025-12-23 16:54:48,604 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 16:54:48,657 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 16:54:48,659 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 16:57:11,340 INFO Set uid to user 0 succeeded
+2025-12-23 16:57:11,354 INFO supervisord started with pid 1
+2025-12-23 16:57:12,359 INFO spawned: 'apache2' with pid 6
+2025-12-23 16:57:12,370 INFO spawned: 'tunnel_manager' with pid 7
+2025-12-23 16:57:13,525 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 16:57:13,525 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 19:05:31,839 WARN received SIGTERM indicating exit request
+2025-12-23 19:05:31,841 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 19:05:32,871 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 19:05:32,873 INFO reaped unknown pid 12 (exit status 0)
+2025-12-23 19:05:32,880 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 19:08:37,360 INFO Set uid to user 0 succeeded
+2025-12-23 19:08:37,387 INFO supervisord started with pid 1
+2025-12-23 19:08:38,408 INFO spawned: 'apache2' with pid 6
+2025-12-23 19:08:38,427 INFO spawned: 'tunnel_manager' with pid 7
+2025-12-23 19:08:39,765 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 19:08:39,768 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 20:58:42,008 WARN received SIGTERM indicating exit request
+2025-12-23 20:58:42,011 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 20:58:42,038 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 20:58:42,040 INFO reaped unknown pid 10 (exit status 0)
+2025-12-23 20:58:43,045 INFO stopped: apache2 (terminated by SIGTERM)
+2025-12-23 21:00:01,890 INFO Set uid to user 0 succeeded
+2025-12-23 21:00:01,920 INFO supervisord started with pid 1
+2025-12-23 21:00:02,973 INFO spawned: 'apache2' with pid 7
+2025-12-23 21:00:03,003 INFO spawned: 'tunnel_manager' with pid 8
+2025-12-23 21:00:04,414 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 21:00:04,419 INFO success: tunnel_manager entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-12-23 21:16:59,292 WARN received SIGTERM indicating exit request
+2025-12-23 21:16:59,294 INFO waiting for apache2, tunnel_manager to die
+2025-12-23 21:16:59,324 INFO stopped: tunnel_manager (exit status 0)
+2025-12-23 21:16:59,325 INFO reaped unknown pid 11 (exit status 0)
+2025-12-23 21:16:59,326 INFO stopped: apache2 (terminated by SIGTERM)

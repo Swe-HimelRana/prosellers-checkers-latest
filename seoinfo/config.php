@@ -9,8 +9,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Security
-define('API_KEY', 'my_secret_api_key_123'); // Change this!
-define('ADMIN_PASSWORD', 'admin123'); // Change this!
+define('API_KEY', getenv('SEOINFO_API_KEY') ?: 'my_secret_api_key_123'); // Change this!
+define('ADMIN_PASSWORD', getenv('SEOINFO_ADMIN_PASSWORD') ?: 'admin123'); // Change this!
 
 // Error Reporting (Disable in production)
 error_reporting(E_ALL);

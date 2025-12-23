@@ -1,30 +1,56 @@
+@apiKey = New-API-Key
+@baseUrl = http://127.0.0.1:8888
+
 ### Instructions
 # 1. Install "REST Client" extension in VS Code.
-# 2. Replace "change-me" with your actual API key from config.py.
-# 3. Click "Send Request" above each endpoint to test.
-# 4. Ensure the Flask app is running (python app.py).
+# 2. All checks are now ASYNCHRONOUS. 
+# 3. Step 1: Call a check endpoint (e.g., /check/cpanel) to get a `job_id`.
+# 4. Step 2: Call GET /results/<job_id> to get the response.
+# 5. Ensure the Docker stack is running (docker-compose up -d).
 
-### Health
-GET http://127.0.0.1:8888/health
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+### Get Job Results (POLL THIS)
+GET {{baseUrl}}/results/d7a78a1f-2d3c-4815-8d1f-4e4745bd5688
+X-API-Key: {{apiKey}}
+
+### Health Check
+GET {{baseUrl}}/health
+X-API-Key: {{apiKey}}
+
+### Proxy Status & GeoIP (NEW)
+# Checks all active proxies in the manager and returns their real GeoIP info
+GET {{baseUrl}}/proxies/status
+X-API-Key: {{apiKey}}
 
 ### cPanel Login Check
-POST http://127.0.0.1:8888/check/cpanel
+POST {{baseUrl}}/check/cpanel
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
-  "host": "lumeasomnului.com",
-  "username": "edo",
-  "password": "qQ0x?zr461f*",
+  "host": "br346.hostgator.com.br",
+  "username": "carlo069",
+  "password": "d6Ot300kRk",
   "ssl": true,
-  "port": 2083
+  "port": 2083,
+  "use_proxy": true
+}
+
+### cPanel Check with explicit Proxy setting
+POST {{baseUrl}}/check/cpanel
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "host": "your_cpanel_host",
+  "username": "your_username",
+  "password": "your_password",
+  "use_proxy": true
 }
 
 ### SMTP Connection Check
-POST http://127.0.0.1:8888/check/smtp
+POST {{baseUrl}}/check/smtp
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
   "host": "smtp.example.com",
@@ -36,9 +62,9 @@ X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
 }
 
 ### SMTP Email Sending Check
-POST http://127.0.0.1:8888/check/smtp/send
+POST {{baseUrl}}/check/smtp/send
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
   "host": "smtp.gmail.com",
@@ -50,37 +76,53 @@ X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
   "starttls": true
 }
 
-
-
-### SSH Login Check
-POST http://127.0.0.1:8888/check/ssh
+### SMTP Email Sending Check with Proxy
+POST {{baseUrl}}/check/smtp/send
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
-  "host": "server.example.com",
+  "host": "smtp.gmail.com",
+  "port": 587,
+  "username": "user@gmail.com",
+  "password": "cpanel_password",
+  "to": "recipient@example.com",
+  "ssl": false,
+  "starttls": true,
+  "use_proxy": true
+}
+
+### SSH Login Check
+POST {{baseUrl}}/check/ssh
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "host": "159.223.82.215",
   "port": 22,
   "username": "root",
-  "password": "pass"
+  "password": "@Pass123@Pass",  
+  "use_proxy": true
 }
 
 ### RDP Login Check
-POST http://127.0.0.1:8888/check/rdp
+POST {{baseUrl}}/check/rdp
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
-  "host": "142.171.204.178",
+  "host": "142.171.204.179",
   "port": 5433,
   "username": "Administrator",
-  "password": "",
-  "domain": ""
+  "password": "@Pass123@Pass",
+  "domain": "",
+  "use_proxy": true
 }
 
-### Proxy Check
-POST http://127.0.0.1:8888/check/proxy
+### Proxy Connectivity Check (Manual)
+POST {{baseUrl}}/check/proxy
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
   "host": "192.252.216.86",
@@ -88,18 +130,14 @@ X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
   "protocol": "socks5"
 }
 
-### IP Info Lookup - Google DNS
-GET http://127.0.0.1:8888/ipinfo/8.8.8.8
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
-
-### IP Info Lookup - Cloudflare DNS
-GET http://127.0.0.1:8888/ipinfo/1.1.1.1
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+### IP Info Lookup (Internal DB)
+GET {{baseUrl}}/ip/info/103.253.38.12
+X-API-Key: {{apiKey}}
 
 ### cPanel Upload Check
-POST http://127.0.0.1:8888/check/cpanel/upload
+POST {{baseUrl}}/check/cpanel/upload
 Content-Type: application/json
-X-API-Key: b009302d-deda-4e0d-a93a-cc1d342ea563
+X-API-Key: {{apiKey}}
 
 {
   "host": "buildbettercredit.org",
