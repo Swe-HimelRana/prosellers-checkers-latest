@@ -24,3 +24,6 @@ xmltodict==1.0.2
 gunicorn==21.2.0
 curl_cffi==0.7.1
 geoip2==4.8.0
+PySocks==1.7.1
+redis==5.0.1
+rq==1.16.2

@@ -1,32 +1,24 @@
 FROM php:8.2-apache
 
-# Install required PHP extensions
-RUN apt-get update && apt-get install -y \
-    libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_sqlite \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install PDO extensions
+RUN docker-php-ext-install pdo pdo_mysql
+
+# SQLite is usually built-in, but ensure it's ready if needed
+RUN apt-get update && apt-get install -y libsqlite3-dev && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set working directory
-WORKDIR /var/www/html
+# Disable PHP OPcache and Apache EnableSendfile for macOS volume compatibility
+RUN echo "opcache.enable=0" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini || \
+    echo "opcache.enable=0" > /usr/local/etc/php/conf.d/no-opcache.ini
+RUN echo "EnableSendfile Off" >> /etc/apache2/apache2.conf
 
 # Copy application files
-COPY . /var/www/html/
+COPY . /var/www/html
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+# Set permissions for Apache to write to the directory
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
 
-# Create directory for SQLite database
-RUN mkdir -p /var/www/html/data \
-    && chown -R www-data:www-data /var/www/html/data \
-    && chmod -R 777 /var/www/html/data
-
-# Expose port 80
 EXPOSE 80
-
-# Start Apache
-CMD ["apache2-foreground"]

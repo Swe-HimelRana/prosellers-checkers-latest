@@ -1,0 +1,16 @@
+### Proxy Service API Documentation
+# This API is used by the Checker to fetch working proxies (real or SSH tunnels).
+
+@baseUrl = http://localhost:8801
+@proxyKey = 83853b46-5d66-45f2-9de6-f4c563003147
+
+### 1. Fetch a Working Proxy
+# Returns a random, verified working proxy from the pool.
+# If it's a cPanel account, it returns a socks5 URL pointing to the tunnel on proxy-service.
+GET {{baseUrl}}/api.php
+X-Proxy-Key: {{proxyKey}}
+
+### 2. Management UI
+# Access the web interface to add/remove proxies.
+# URL: http://localhost:8801/index.php
+# Password: prosellers@2025
