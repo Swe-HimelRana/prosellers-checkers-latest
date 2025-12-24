@@ -1,113 +1,93 @@
 services:
   checker:
-    build: .
-    container_name: prosellers-checker
+    image: prosellers-all-in-one
+    container_name: prosellers-all-in-one
     ports:
-      - "8888:8888"
-    depends_on:
-      - proxy-service
-      - logs
-      - redis
+      - "8888:8888" #checker
+      - "8801:8801" #proxy
+      - "8803:8803" #log
+      - "8804:8804" #seoinfo
     environment:
       - PORT=8888
       - API_KEY=b009302d-deda-4e0d-a93a-cc1d342ea563
-      - PROXY_API_URL=http://proxy-service/api.php
+      - PROXY_API_URL=http://127.0.0.1:8801/api.php
       - PROXY_API_KEY=83853b46-5d66-45f2-9de6-f4c563003147
-      - LOG_SERVER_URL=http://logs/api.php
+      - LOG_SERVER_URL=http://127.0.0.1:8803/api.php
       - USE_PROXY_DEFAULT=true
-      - REDIS_URL=redis://redis:6379
-    volumes:
-      - .:/app
-      - ./docker_data:/app/data
-      - ./log:/app/log
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-
-  worker:
-    build: .
-    container_name: prosellers-worker
-    command: python3 worker.py
-    depends_on:
-      - redis
-      - proxy-service
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - PROXY_API_URL=http://proxy-service/api.php
-      - PROXY_API_KEY=83853b46-5d66-45f2-9de6-f4c563003147
-      - LOG_SERVER_URL=http://logs/api.php
-      - USE_PROXY_DEFAULT=true
-    volumes:
-      - .:/app
-      - ./docker_data:/app/data
-      - ./log:/app/log
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-
-  redis:
-    image: redis:alpine
-    container_name: prosellers-redis
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 128M
-
-  proxy-service:
-    build: ./proxy-service
-    container_name: prosellers-proxy-service
-    ports:
-      - "8801:80"
-      - "9900-9950:9900-9950"
-    volumes:
-      - ./proxy-service:/var/www/html
-    cap_add:
-      - NET_ADMIN
-    environment:
+      - REDIS_URL=redis://127.0.0.1:6379
       - PROXY_ADMIN_PASSWORD=prosellers@2025
-      - PROXY_API_KEY=83853b46-5d66-45f2-9de6-f4c563003147
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-
-  logs:
-    build: ./log
-    container_name: prosellers-logs
-    ports:
-      - "8803:80"
+      - DB_TYPE=mysql
+      - DB_HOST=mysql
+      - DB_NAME=seoinfo_db
+      - DB_USER=seoinfo_user
+      - DB_PASS=seoinfo_pass
+      - LOG_DB_TYPE=mysql
+      - LOG_DB_HOST=mysql
+      - LOG_DB_NAME=logs_db
+      - LOG_DB_USER=root
+      - LOG_DB_PASS=root_pass
+      - PROXY_DB_TYPE=mysql
+      - PROXY_DB_HOST=mysql
+      - PROXY_DB_NAME=proxy_db
+      - PROXY_DB_USER=seoinfo_user
+      - PROXY_DB_PASS=seoinfo_pass
     volumes:
-      - ./log:/var/www/html
+      - prosellers_data:/app/data
+      - prosellers_logs:/app/log
+    depends_on:
+      - mysql
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 256M
+          cpus: 1
+          memory: 512m
 
-  seoinfo:
-    build: ./seoinfo
-    container_name: prosellers-seoinfo
-    ports:
-      - "8804:80"
+  mysql:
+    image: mariadb:10.11
+    container_name: prosellers-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_pass
+      - MYSQL_DATABASE=seoinfo_db
+      - MYSQL_USER=seoinfo_user
+      - MYSQL_PASSWORD=seoinfo_pass
     volumes:
-      - ./seoinfo:/var/www/html
+
+      - prosellers_mysql_data:/var/lib/mysql
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo "CREATE DATABASE IF NOT EXISTS logs_db;
+        CREATE DATABASE IF NOT EXISTS proxy_db;
+        GRANT ALL PRIVILEGES ON logs_db.* TO 'root'@'%';
+        GRANT ALL PRIVILEGES ON proxy_db.* TO 'seoinfo_user'@'%';
+        FLUSH PRIVILEGES;" > /docker-entrypoint-initdb.d/init.sql
+        /usr/local/bin/docker-entrypoint.sh mysqld
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 256M
+          cpus: 0.5
+          memory: 512m
 
-networks:
-  default:
-    name: prosellers-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: prosellers-phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 256m
+
+volumes:
+  prosellers_data:
+  prosellers_logs:
+  prosellers_mysql_data:

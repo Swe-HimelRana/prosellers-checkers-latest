@@ -3,25 +3,53 @@ require_once 'config.php';
 
 function getProxyDB() {
     try {
-        $pdo = new PDO("sqlite:" . DB_PATH);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $pdo = null;
 
-        // Create table if not exists
-        $pdo->exec("CREATE TABLE IF NOT EXISTS proxies (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            type TEXT NOT NULL, -- 'cpanel', 'ssh', or 'real'
-            host TEXT NOT NULL,
-            port INTEGER NOT NULL,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL,
-            status INTEGER DEFAULT 1, -- 1 active, 0 inactive
-            tunnel_port INTEGER, -- The allocated local port for cpanel SSH tunnels
-            last_used DATETIME,
-            last_checked DATETIME,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )");
+        if (defined('PROXY_DB_TYPE') && PROXY_DB_TYPE === 'mysql') {
+            // MySQL Connection
+            $dsn = "mysql:host=" . PROXY_DB_HOST . ";dbname=" . PROXY_DB_NAME . ";charset=utf8mb4";
+            $pdo = new PDO($dsn, PROXY_DB_USER, PROXY_DB_PASS);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            // MySQL Table Creation
+            $pdo->exec("CREATE TABLE IF NOT EXISTS proxies (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                type VARCHAR(50) NOT NULL, -- 'cpanel', 'ssh', or 'real'
+                host VARCHAR(255) NOT NULL,
+                port INT NOT NULL,
+                username VARCHAR(255) NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                status TINYINT DEFAULT 1, -- 1 active, 0 inactive
+                tunnel_port INT, -- The allocated local port for cpanel SSH tunnels
+                last_used DATETIME,
+                last_checked DATETIME,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        } else {
+            // SQLite Connection (Default)
+            $pdo = new PDO("sqlite:" . DB_PATH);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            // SQLite Table Creation
+            $pdo->exec("CREATE TABLE IF NOT EXISTS proxies (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                type TEXT NOT NULL, -- 'cpanel', 'ssh', or 'real'
+                host TEXT NOT NULL,
+                port INTEGER NOT NULL,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL,
+                status INTEGER DEFAULT 1, -- 1 active, 0 inactive
+                tunnel_port INTEGER, -- The allocated local port for cpanel SSH tunnels
+                last_used DATETIME,
+                last_checked DATETIME,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )");
+        }
 
         return $pdo;
     } catch (PDOException $e) {
