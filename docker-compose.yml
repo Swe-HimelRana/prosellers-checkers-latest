@@ -1,12 +1,14 @@
 services:
   checker:
     image: prosellers-all-in-one
+    build: .
     container_name: prosellers-all-in-one
     ports:
       - "8888:8888" #checker
       - "8801:8801" #proxy
       - "8803:8803" #log
       - "8804:8804" #seoinfo
+      - "9900-9950:9900-9950" #ssh tunnels
     environment:
       - PORT=8888
       - API_KEY=b009302d-deda-4e0d-a93a-cc1d342ea563
@@ -16,6 +18,10 @@ services:
       - USE_PROXY_DEFAULT=true
       - REDIS_URL=redis://127.0.0.1:6379
       - PROXY_ADMIN_PASSWORD=prosellers@2025
+      - LOG_ADMIN_PASSWORD=prosellers@2025
+      - LOG_API_KEY=b009302d-deda-4e0d-a93a-cc1d342ea563
+      - SEOINFO_ADMIN_PASSWORD=prosellers@2025
+      - SEOINFO_API_KEY=b009302d-deda-4e0d-a93a-cc1d342ea563
       - DB_TYPE=mysql
       - DB_HOST=mysql
       - DB_NAME=seoinfo_db

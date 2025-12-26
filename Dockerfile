@@ -18,12 +18,10 @@ RUN apt-get update && apt-get install -y \
     apache2 \
     php \
     libapache2-mod-php \
-    php-sqlite3 \
     php-curl \
     php-mysql \
     supervisor \
     curl \
-    sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 
 # --- Checker & Worker Setup ---
@@ -66,18 +64,14 @@ RUN chown -R www-data:www-data /var/www/html && \
 # Supervisor Config
 COPY supervisord.conf /etc/supervisord.conf
 
-# Data Directory for Persistence
+# Data Directory for Persistence & GeoIP
 RUN mkdir -p /data && chmod 777 /data
-ENV DB_FILE_PATH=/data/database.sqlite
+COPY docker_data/GeoLite2-City.mmdb /data/
+COPY docker_data/GeoLite2-ASN.mmdb /data/
 
-# Patch Configs to use /data volume
-# 1. Proxy Service: Change DB_PATH to /data/proxies.sqlite
-RUN sed -i "s|__DIR__ . '/proxies.sqlite'|'/data/proxies.sqlite'|g" /var/www/html/proxy-service/config.php
-
-# 2. Seoinfo: Patch db.php to look in /data
-# Original: $dbPath = __DIR__ . '/' . DB_NAME . '.sqlite';
-# New: $dbPath = '/data/' . DB_NAME . '.sqlite';
-RUN sed -i "s|\$dbPath = __DIR__ . '/' . DB_NAME . '.sqlite';|\$dbPath = '/data/' . DB_NAME . '.sqlite';|g" /var/www/html/seoinfo/db.php
+# Cleanup SQLite files if any found their way in
+RUN find /var/www/html -name "*.sqlite" -delete && \
+    find /app -name "*.sqlite" -delete
 
 # Expose all ports
 # 8888: Checker API

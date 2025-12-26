@@ -1,5 +1,5 @@
-@apiKey = New-API-Key
-@baseUrl = http://127.0.0.1:8888
+@apiKey = b009302d-deda-4e0d-a93a-cc1d342ea563
+@baseUrl = https://checkers.prosellers.ailab.eu.org
 
 ### Instructions
 # 1. Install "REST Client" extension in VS Code.
@@ -9,7 +9,7 @@
 # 5. Ensure the Docker stack is running (docker-compose up -d).
 
 ### Get Job Results (POLL THIS)
-GET {{baseUrl}}/results/eb49b21f-d5f5-42b4-87e6-c29481ab98f4
+GET {{baseUrl}}/results/6865cb63-fe80-4cdd-a08e-3ec79aeb4a8c
 X-API-Key: {{apiKey}}
 
 ### Health Check
@@ -111,12 +111,12 @@ Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-  "host": "142.171.204.179",
+  "host": "142.171.204.17",
   "port": 5433,
   "username": "Administrator",
-  "password": "@Pass123@Pass",
+  "password": "",
   "domain": "",
-  "use_proxy": true
+  "use_proxy": false
 }
 
 ### Proxy Connectivity Check (Manual)

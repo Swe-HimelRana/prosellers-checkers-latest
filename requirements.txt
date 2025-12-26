@@ -27,3 +27,4 @@ geoip2==4.8.0
 PySocks==1.7.1
 redis==5.0.1
 rq==1.16.2
+pymysql==1.1.0

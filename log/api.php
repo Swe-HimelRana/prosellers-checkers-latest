@@ -9,6 +9,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Check API Key
+$headers = getallheaders();
+$api_key = $headers['X-API-Key'] ?? $headers['x-api-key'] ?? null;
+
+if ($api_key !== LOG_API_KEY) {
+    http_response_code(401);
+    echo json_encode(['ok' => false, 'message' => 'Unauthorized: Invalid API Key']);
+    exit;
+}
+
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
 

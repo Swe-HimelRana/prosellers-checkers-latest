@@ -36,7 +36,15 @@ def check_proxy(host, port, username, password, protocol="http", timeout=60):
 
 def get_all_proxies_status():
     job = get_current_job()
-    all_proxies = proxy_mgr.get_all_proxies()
+    all_proxies, debug_info = proxy_mgr.get_all_proxies()
+    
+    if not all_proxies:
+        if job:
+            job.meta['progress'] = 100
+            job.save_meta()
+        # Return tuple (ok, msg, details) directly so user sees the debug info
+        return False, "No active proxies found. See details for debug logs.", debug_info
+
     total = len(all_proxies)
     results = []
     

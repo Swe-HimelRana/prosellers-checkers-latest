@@ -3,6 +3,10 @@ require_once 'db.php';
 
 header('Content-Type: application/json');
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $auth_key = $_SERVER['HTTP_X_PROXY_KEY'] ?? '';
 if ($auth_key !== PROXY_API_KEY) {
     http_response_code(401);
@@ -20,11 +24,12 @@ if (!empty($exclude_ids)) {
     $exclude_sql = " AND id NOT IN (" . implode(',', $exclude_ids) . ")";
 }
 
-$stmt = $pdo->query("SELECT * FROM proxies WHERE status = 1 AND (type = 'real' OR (type IN ('cpanel', 'ssh') AND tunnel_port IS NOT NULL)) $exclude_sql ORDER BY RANDOM()");
+$stmt = $pdo->query("SELECT * FROM proxies WHERE status = 1 AND (type = 'real' OR (type IN ('cpanel', 'ssh') AND tunnel_port IS NOT NULL)) $exclude_sql ORDER BY RAND()");
 
 $all_mode = isset($_GET['all']) && $_GET['all'] == '1';
 $working_proxies = [];
 $total_checked = 0;
+$debug_logs = [];
 
 while ($proxy = $stmt->fetch()) {
     $total_checked++;
@@ -43,7 +48,11 @@ while ($proxy = $stmt->fetch()) {
         $public_proxy_url = "socks5://127.0.0.1:" . $port;
     }
 
-    if (verifyProxy($current_verify_url)) {
+    // Verify proxy (Google check)
+    $is_working = verifyProxy($current_verify_url);
+    $debug_logs[] = "ID {$proxy['id']} ($public_proxy_url): " . ($is_working ? "OK" : "Failed");
+
+    if ($is_working) {
         $proxy_data = [
             "id" => $proxy['id'],
             "type" => $proxy['type'],
@@ -63,22 +72,30 @@ while ($proxy = $stmt->fetch()) {
     }
 }
 
+$debug_info = [
+    "candidates_found" => $total_checked,
+    "logs" => $debug_logs
+];
+
 if (!empty($working_proxies)) {
     if (!$all_mode) {
         $pdo->prepare("UPDATE proxies SET last_used = CURRENT_TIMESTAMP, last_checked = CURRENT_TIMESTAMP WHERE id = ?")->execute([$selected_id]);
         echo json_encode([
             "ok" => true, 
-            "proxy" => $working_proxies[0]
+            "proxy" => $working_proxies[0],
+            "debug_info" => $debug_info
         ], JSON_UNESCAPED_SLASHES);
     } else {
         echo json_encode([
             "ok" => true, 
-            "proxies" => $working_proxies
+            "proxies" => $working_proxies,
+            "debug_info" => $debug_info
         ], JSON_UNESCAPED_SLASHES);
     }
 } else {
     echo json_encode([
         "ok" => false, 
-        "message" => "No active or working proxies available (Checked $total_checked candidates)"
+        "message" => "No active or working proxies available",
+        "debug_info" => $debug_info
     ], JSON_UNESCAPED_SLASHES);
 }
