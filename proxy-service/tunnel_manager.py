@@ -1,4 +1,5 @@
-import sqlite3
+import pymysql
+import pymysql.cursors
 import subprocess
 import time
 import os
@@ -9,10 +10,11 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-if os.path.exists('/data'):
-    DB_PATH = "/data/proxies.sqlite"
-else:
-    DB_PATH = "proxies.sqlite"
+# Database Configuration
+DB_HOST = os.getenv("PROXY_DB_HOST", "mysql")
+DB_NAME = os.getenv("PROXY_DB_NAME", "proxy_db")
+DB_USER = os.getenv("PROXY_DB_USER", "seoinfo_user")
+DB_PASS = os.getenv("PROXY_DB_PASS", "seoinfo_pass")
 
 PORT_START = 9900
 PORT_END = 9951
@@ -22,16 +24,21 @@ class TunnelManager:
         self.tunnels = {} # id -> {port, process}
 
     def get_db(self):
-        conn = sqlite3.connect(DB_PATH, timeout=30)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return pymysql.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASS,
+            database=DB_NAME,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
 
     def get_active_proxies(self):
         try:
             conn = self.get_db()
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM proxies WHERE type IN ('cpanel', 'ssh') AND status = 1")
-            proxies = [dict(row) for row in cursor.fetchall()]
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT * FROM proxies WHERE type IN ('cpanel', 'ssh') AND status = 1")
+                proxies = cursor.fetchall()
             conn.close()
             return proxies
         except Exception as e:
@@ -87,7 +94,8 @@ class TunnelManager:
             
             # Update DB with assigned port
             conn = self.get_db()
-            conn.execute("UPDATE proxies SET tunnel_port = ? WHERE id = ?", (port, pid))
+            with conn.cursor() as cursor:
+                cursor.execute("UPDATE proxies SET tunnel_port = %s WHERE id = %s", (port, pid))
             conn.commit()
             conn.close()
         except Exception as e:
@@ -110,7 +118,8 @@ class TunnelManager:
             # Clear port in DB
             try:
                 conn = self.get_db()
-                conn.execute("UPDATE proxies SET tunnel_port = NULL WHERE id = ?", (pid,))
+                with conn.cursor() as cursor:
+                    cursor.execute("UPDATE proxies SET tunnel_port = NULL WHERE id = %s", (pid,))
                 conn.commit()
                 conn.close()
             except Exception as e:

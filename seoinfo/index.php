@@ -76,7 +76,7 @@
             <div class="mb-4">
                 <h5 class="mb-3">⚙️ Features</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2">✅ SQLite & MySQL Support</li>
+                    <li class="mb-2">✅ MySQL Support</li>
                     <li class="mb-2">✅ API Key Authentication</li>
                     <li class="mb-2">✅ Automatic IP Resolution</li>
                     <li class="mb-2">✅ Bulk Data Management</li>

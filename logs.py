@@ -2,6 +2,8 @@ import requests
 import threading
 import os
 
+from config import LOG_API_KEY
+
 # Configuration
 LOG_SERVER_URL = os.getenv("LOG_SERVER_URL", "http://127.0.0.1:8803/api.php")
 
@@ -15,8 +17,12 @@ def _send_log(title, data):
             "title": title,
             "data": data
         }
+        headers = {
+            "Content-Type": "application/json",
+            "X-API-Key": LOG_API_KEY
+        }
         # Timeout is short to avoid hanging threads for too long
-        requests.post(LOG_SERVER_URL, json=payload, timeout=2)
+        requests.post(LOG_SERVER_URL, json=payload, headers=headers, timeout=2)
     except Exception:
         # User requested silent failure
         pass
