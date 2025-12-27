@@ -65,9 +65,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         
         $params = [];
         foreach ($fields as $field) {
-            $params[$field] = $_POST[$field] ?? null;
+            $val = $_POST[$field] ?? null;
+            if (is_string($val)) {
+                $val = trim($val);
+            }
+            if ($val === '') {
+                $val = null;
+            }
+            $params[$field] = $val;
         }
-        
+
+        // Auto-IP Resolution
+        if (empty($params['ip']) && !empty($params['domain'])) {
+            $resolved = gethostbyname($params['domain']);
+            if ($resolved !== $params['domain']) {
+                $params['ip'] = $resolved;
+            } else {
+                $error = "Invalid domain: IP resolution failed.";
+            }
+        }
+
+        if (!isset($error)) {
+
+
+
         if (!empty($_POST['id'])) {
             // Update
             $sql = "UPDATE seo_data SET ";
@@ -91,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $error = "Error adding record: " . $e->getMessage();
             }
         }
+    }
     }
 }
 

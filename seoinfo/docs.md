@@ -118,6 +118,16 @@ GET /add.php?domain=newdomain.com&key=my_secret_api_key_123
 }
 ```
 
+**Failure Response (200 - Invalid Domain/IP):**
+```json
+{
+   "status": "failed",
+   "message": "Invalid domain",
+   "domain": "invalid-domain.com",
+   "ip": "not availble"
+}
+```
+
 ---
 
 ### 3. Get Queue
@@ -220,6 +230,9 @@ echo -n "YOUR_SQL_QUERY" | base64
 
 # Example
 echo -n "INSERT INTO seo_data (domain, domain_authority) VALUES ('test.com', 50)" | base64
+
+# Migration (Make fields nullable)
+echo -n "ALTER TABLE seo_data MODIFY ip VARCHAR(45) NULL, MODIFY update_date VARCHAR(255) NULL, MODIFY product_type VARCHAR(255) NULL, MODIFY product_id VARCHAR(255) NULL, MODIFY seller VARCHAR(255) NULL, MODIFY domain_authority INT NULL, MODIFY page_authority INT NULL, MODIFY spam_score INT NULL, MODIFY backlink INT NULL, MODIFY referring_domains INT NULL, MODIFY inbound_links INT NULL, MODIFY outbound_links INT NULL, MODIFY domain_age VARCHAR(255) NULL, MODIFY domain_blacklist TEXT NULL, MODIFY ip_blacklist TEXT NULL" | base64
 ```
 
 ---
@@ -232,21 +245,21 @@ echo -n "INSERT INTO seo_data (domain, domain_authority) VALUES ('test.com', 50)
 |--------|------|-------------|
 | `id` | INTEGER | Primary key (auto-increment) |
 | `domain` | TEXT | Domain name (unique) |
-| `ip` | TEXT | IP address |
-| `update_date` | TEXT | Last update date (dd-mm-yyyy) |
-| `product_type` | TEXT | Product type |
-| `product_id` | TEXT | Product identifier |
-| `seller` | TEXT | Seller name |
-| `domain_authority` | INTEGER | Domain Authority score |
-| `page_authority` | INTEGER | Page Authority score |
-| `spam_score` | INTEGER | Spam score |
-| `backlink` | INTEGER | Number of backlinks |
-| `referring_domains` | INTEGER | Number of referring domains |
-| `inbound_links` | INTEGER | Number of inbound links |
-| `outbound_links` | INTEGER | Number of outbound links |
-| `domain_age` | TEXT | Domain age |
-| `domain_blacklist` | TEXT | Domain blacklist status |
-| `ip_blacklist` | TEXT | IP blacklist status |
+| `ip` | TEXT | IP address (Nullable) |
+| `update_date` | TEXT | Last update date (dd-mm-yyyy) (Nullable) |
+| `product_type` | TEXT | Product type (Nullable) |
+| `product_id` | TEXT | Product identifier (Nullable) |
+| `seller` | TEXT | Seller name (Nullable) |
+| `domain_authority` | INTEGER | Domain Authority score (Nullable) |
+| `page_authority` | INTEGER | Page Authority score (Nullable) |
+| `spam_score` | INTEGER | Spam score (Nullable) |
+| `backlink` | INTEGER | Number of backlinks (Nullable) |
+| `referring_domains` | INTEGER | Number of referring domains (Nullable) |
+| `inbound_links` | INTEGER | Number of inbound links (Nullable) |
+| `outbound_links` | INTEGER | Number of outbound links (Nullable) |
+| `domain_age` | TEXT | Domain age (Nullable) |
+| `domain_blacklist` | TEXT | Domain blacklist status (Nullable) |
+| `ip_blacklist` | TEXT | IP blacklist status (Nullable) |
 | `created_at` | DATETIME | Record creation timestamp |
 
 ---
@@ -267,7 +280,7 @@ echo -n "INSERT INTO seo_data (domain, domain_authority) VALUES ('test.com', 50)
 
 Access the admin panel at `/admin.php`
 
-**Default Password:** `admin123` (⚠️ Change this in production!)
+**Default Password:** `prosellers@2025` (⚠️ Change this in production!)
 
 **Features:**
 - View all domains with pagination (50 per page)
@@ -293,16 +306,17 @@ Access the admin panel at `/admin.php`
 
 ## Configuration
 
-Edit `config.php` to configure:
+Edit `config.php` or use Environment Variables (Docker):
 
-```php
-define('DB_TYPE', 'sqlite');        // 'sqlite' or 'mysql'
-define('DB_HOST', 'localhost');     // MySQL host
-define('DB_NAME', 'seoinfo_db');    // Database name
-define('DB_USER', 'root');          // MySQL user
-define('DB_PASS', '');              // MySQL password
-define('API_KEY', 'your_key_here'); // API key
-define('ADMIN_PASSWORD', 'your_pw'); // Admin password
+```bash
+# Environment Variables
+SEOINFO_API_KEY=your_key_here
+SEOINFO_ADMIN_PASSWORD=prosellers@2025
+DB_TYPE=mysql
+DB_HOST=mysql
+DB_NAME=seoinfo_db
+DB_USER=seoinfo_user
+DB_PASS=seoinfo_pass
 ```
 
 ---

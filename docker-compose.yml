@@ -40,6 +40,7 @@ services:
     volumes:
       - prosellers_data:/app/data
       - prosellers_logs:/app/log
+      - ./seoinfo:/var/www/html/seoinfo
     depends_on:
       - mysql
     restart: unless-stopped

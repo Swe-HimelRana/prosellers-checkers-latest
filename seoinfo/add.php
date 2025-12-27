@@ -17,11 +17,7 @@ if (!isset($_GET['domain'])) {
 
 $domain = trim($_GET['domain']);
 
-// Validate domain format (basic)
-if (!filter_var(gethostbyname($domain), FILTER_VALIDATE_IP) && !checkdnsrr($domain, 'A')) {
-    // This check is a bit loose, mainly to see if it even resolves, but we'll do the IP resolution below anyway.
-    // Let's just rely on the IP resolution step.
-}
+
 
 try {
     $pdo = getDB();
@@ -38,7 +34,13 @@ try {
     $ip = gethostbyname($domain);
     // gethostbyname returns the domain itself on failure
     if ($ip === $domain) {
-        $ip = null; 
+        echo json_encode([
+            'status' => 'failed',
+            'message' => 'Invalid domain',
+            'domain' => $domain,
+            'ip' => 'not availble'
+        ]);
+        exit;
     }
 
     // Insert

@@ -1,16 +1,21 @@
 ### SEO Info API - HTTP Requests
 ### Use this file with REST Client extension in VS Code or similar tools
 
-@baseUrl = http://localhost:8888
-@apiKey = my_secret_api_key_123
+@baseUrl = http://localhost:8804
+@apiKey = b009302d-deda-4e0d-a93a-cc1d342ea563
 
 ### 1. Get Domain Info
 GET {{baseUrl}}/api.php?domain=example.com&key={{apiKey}}
 
 ###
 
-### 2. Add New Domain (with IP resolution)
+### 2. Add New Domain (Valid - Should resolve IP)
 GET {{baseUrl}}/add.php?domain=google.com&key={{apiKey}}
+
+###
+
+### 2b. Add New Domain (Invalid - Should fail)
+GET {{baseUrl}}/add.php?domain=invalid-domain-xyz-123.com&key={{apiKey}}
 
 ###
 
@@ -32,6 +37,14 @@ POST {{baseUrl}}/update.php
 Content-Type: application/x-www-form-urlencoded
 
 key={{apiKey}}&sql=VVBEQVRFIHNlb19kYXRhIFNFVCB1cGRhdGVfZGF0ZSA9ICcxNy0xMi0yMDI1JyBXSEVSRSBkb21haW4gPSAnZXhhbXBsZS5jb20n
+
+###
+
+### 6. Migrate Table Structure (Make fields nullable)
+POST {{baseUrl}}/update.php
+Content-Type: application/x-www-form-urlencoded
+
+key={{apiKey}}&sql=QUxURVIgVEFCTEUgc2VvX2RhdGEgTU9ESUZZIGlwIFZBUkNIQVIoNDUpIE5VTEwsIE1PRElGWSB1cGRhdGVfZGF0ZSBWQVJDSEFSKDI1NSkgTlVMTCwgTU9ESUZZIHByb2R1Y3RfdHlwZSBWQVJDSEFSKDI1NSkgTlVMTCwgTU9ESUZZIHByb2R1Y3RfaWQgVkFSQ0hBUigyNTUpIE5VTEwsIE1PRElGWSBzZWxsZXIgVkFSQ0hBUigyNTUpIE5VTEwsIE1PRElGWSBkb21haW5fYXV0aG9yaXR5IElOVCBOVUxMLCBNT0RJRlkgcGFnZV9hdXRob3JpdHkgSU5UIE5VTEwsIE1PRElGWSBzcGFtX3Njb3JlIElOVCBOVUxMLCBNT0RJRlkgYmFja2xpbmsgSU5UIE5VTEwsIE1PRElGWSByZWZlcnJpbmdfZG9tYWlucyBJTlQgTlVMTCwgTU9ESUZZIGluYm91bmRfbGlua3MgSU5UIE5VTEwsIE1PRElGWSBvdXRib3VuZF9saW5rcyBJTlQgTlVMTCwgTU9ESUZZIGRvbWFpbl9hZ2UgVkFSQ0hBUigyNTUpIE5VTEwsIE1PRElGWSBkb21haW5fYmxhY2tsaXN0IFRFWFQgTlVMTCwgTU9ESUZZIGlwX2JsYWNrbGlzdCBURVhUIE5VTEw=
 
 ###
 
